@@ -1,0 +1,29 @@
+[2025-03-17 10:23:03] [1063757] [INFO] ANALYSIS JOB IS PENDING (ID = 26261).
+[2025-03-17 10:23:03] [1062959] [INFO] Receiving task AN-01JPHT1QHAG85H04GJPNXJFRES - infercnv
+[2025-03-17 10:23:03] [1062959] [INFO] Push message successfully
+[2025-03-17 10:23:03] [1062959] [INFO] ANALYZE: infercnv.
+[2025-03-17 10:23:03] [1062959] [INFO] Run infercnv.
+[2025-03-17 10:23:03] [1062959] [INFO] Calculate pseudo cells
+[2025-03-17 10:23:03] [1062959] [ERROR] Traceback (most recent call last):
+  File "/data/ub-ntluan-33c491f76e8585d/workspace/bbrowserxs-2/pyapps/lib/python3.10/site-packages/bioturing_bbrowserx/analysis/__init__.py", line 41, in _fallback_call
+  File "/data/ub-ntluan-33c491f76e8585d/workspace/bbrowserxs-2/pyapps/lib/python3.10/site-packages/bioturing_bbrowserx/analysis/infercnv.py", line 88, in __infercnv
+  File "/data/ub-ntluan-33c491f76e8585d/workspace/bbrowserxs-2/pyapps/lib/python3.10/site-packages/bioturing_bbrowserx/analysis/infercnv.py", line 39, in __get_pseudo_adata
+  File "/data/ub-ntluan-33c491f76e8585d/workspace/bbrowserxs-2/pyapps/lib/python3.10/site-packages/bioalpha/store/_basic.py", line 337, in __getitem__
+KeyError: 'Cluster 1'
+
+[2025-03-17 10:23:03] [1062959] [INFO] Run GPU function error, fallback to CPU.
+[2025-03-17 10:23:03] [1062959] [INFO] Run infercnv.
+[2025-03-17 10:23:03] [1062959] [INFO] Calculate pseudo cells
+[2025-03-17 10:23:03] [1062959] [ERROR] Traceback (most recent call last):
+  File "/data/ub-ntluan-33c491f76e8585d/workspace/bbrowserxs-2/runtimes/workers/analysis_worker.py", line 241, in run_analysis
+    analysis_results = analysis.run_analysis(
+  File "/data/ub-ntluan-33c491f76e8585d/workspace/bbrowserxs-2/pyapps/lib/python3.10/site-packages/bioturing_bbrowserx/analysis/__init__.py", line 97, in run_analysis
+  File "/data/ub-ntluan-33c491f76e8585d/workspace/bbrowserxs-2/pyapps/lib/python3.10/site-packages/bioturing_bbrowserx/analysis/__init__.py", line 51, in _fallback_call
+  File "/data/ub-ntluan-33c491f76e8585d/workspace/bbrowserxs-2/pyapps/lib/python3.10/site-packages/bioturing_bbrowserx/analysis/infercnv.py", line 88, in __infercnv
+  File "/data/ub-ntluan-33c491f76e8585d/workspace/bbrowserxs-2/pyapps/lib/python3.10/site-packages/bioturing_bbrowserx/analysis/infercnv.py", line 39, in __get_pseudo_adata
+  File "/data/ub-ntluan-33c491f76e8585d/workspace/bbrowserxs-2/pyapps/lib/python3.10/site-packages/bioalpha/store/_basic.py", line 337, in __getitem__
+KeyError: 'Cluster 1'
+
+[2025-03-17 10:23:03] [1062959] [INFO] Finishing task AN-01JPHT1QHAG85H04GJPNXJFRES - infercnv.
+[2025-03-17 10:23:03] [1062959] [INFO] Push message successfully
+[2025-03-17 10:23:03] [1062959] [INFO] DONE.
