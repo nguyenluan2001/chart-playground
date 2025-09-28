@@ -1,8 +1,13 @@
 import * as echarts from "echarts";
 import { get } from "lodash";
 import { useEffect, useRef } from "react";
+import ClonotypeBarChart from "./components/clonotype/barchart";
+import ClonotypeHeatmap from "./components/clonotype/heatmap";
+import ClonotypeMotif from "./components/clonotype/sequence-motif";
+import ClonotypeViolin from "./components/clonotype/violin";
 import Heatmap from "./components/heatmap/heatmap";
 import InteractiveHeatmap from "./components/higlass/InteractiveHeatmap";
+import Histogram from "./components/histogram";
 import TableTest from "./components/table";
 import data from "./data.json";
 
@@ -209,9 +214,14 @@ function App() {
 	};
 
 	// return <InteractiveHeatmap />;
-	return <Heatmap />;
+	// return <Heatmap />;
+	// return <Histogram />;
 	// return <div id="echarts" />;
 	// return <TableTest />;
+	// return <ClonotypeHeatmap />;
+	// return <ClonotypeBarChart />;
+	// return <ClonotypeViolin />;
+	return <ClonotypeMotif />;
 }
 
 export default App;
