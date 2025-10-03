@@ -219,9 +219,9 @@ function App() {
 	// return <div id="echarts" />;
 	// return <TableTest />;
 	// return <ClonotypeHeatmap />;
-	// return <ClonotypeBarChart />;
+	return <ClonotypeBarChart />;
 	// return <ClonotypeViolin />;
-	return <ClonotypeMotif />;
+	// return <ClonotypeMotif />;
 }
 
 export default App;

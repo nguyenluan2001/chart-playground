@@ -24,7 +24,6 @@ const compare = (data: any, filter: any): boolean => {
 	if (!operatorObj) return true;
 
 	const [operator, operatorVal] = Object.entries(operatorObj)[0];
-	console.log("operator-operatorVal", operator, operatorVal, operatorObj);
 
 	if (operator === OPERATOR.AND) {
 		let result = true;
