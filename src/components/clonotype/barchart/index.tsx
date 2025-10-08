@@ -1,4 +1,4 @@
-import { Slider } from "antd";
+import { Button, Slider } from "antd";
 import * as echarts from "echarts";
 import { useEffect, useRef, useState } from "react";
 import rawData from "./data.json";
@@ -55,7 +55,7 @@ const palette = [
 	"#602400",
 	"#4066df",
 ];
-const ROWS_PER_VIEWS = 3;
+const ROWS_PER_VIEWS = 4;
 const ClonotypeBarChart = () => {
 	const chartRef = useRef<echarts.ECharts>(null);
 	const optionRef = useRef<any>(null);
@@ -156,7 +156,7 @@ const ClonotypeBarChart = () => {
 			dataZoom: [
 				{
 					type: "slider",
-					startValue: xAxis.length,
+					startValue: xAxis.length - 1,
 					endValue: xAxis?.length - ROWS_PER_VIEWS,
 					yAxisIndex: [0],
 					zoomLock: true,
@@ -339,6 +339,18 @@ const ClonotypeBarChart = () => {
 			seriesIndex: index,
 		});
 	};
+	const onScrollTo = () => {
+		const scrollIndex = 0;
+		chartRef.current?.dispatchAction({
+			type: "dataZoom",
+			// optional; index of dataZoom component; useful for are multiple dataZoom components; 0 by default
+			dataZoomIndex: 0,
+			// data value at starting location
+			startValue: xAxisRef.current?.length - scrollIndex,
+			// data value at ending location
+			endValue: xAxisRef.current?.length - scrollIndex - ROWS_PER_VIEWS,
+		});
+	};
 	return (
 		<div>
 			<div className=" mx-auto w-[500px]">
@@ -349,6 +361,7 @@ const ClonotypeBarChart = () => {
 			<div className="flex justify-center">
 				<div id="main" className=""></div>
 			</div>
+			<Button onClick={onScrollTo}>Scroll to</Button>
 		</div>
 	);
 };
