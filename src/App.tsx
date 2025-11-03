@@ -10,6 +10,8 @@ import InteractiveHeatmap from "./components/higlass/InteractiveHeatmap";
 import Histogram from "./components/histogram";
 import TableTest from "./components/table";
 import data from "./data.json";
+import SwarmChart from "./components/clonotype/swarmchart/SwarmChart";
+import HeatmapMatrix from "./components/clustergrammarGL";
 
 function App() {
 	const graphicRef = useRef<any>();
@@ -219,9 +221,11 @@ function App() {
 	// return <div id="echarts" />;
 	// return <TableTest />;
 	// return <ClonotypeHeatmap />;
-	return <ClonotypeBarChart />;
+	// return <ClonotypeBarChart />;
 	// return <ClonotypeViolin />;
 	// return <ClonotypeMotif />;
+	// return <SwarmChart />;
+	return <HeatmapMatrix />;
 }
 
 export default App;

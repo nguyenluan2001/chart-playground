@@ -11,17 +11,29 @@ const CELL_SIZE = 50;
 const filters = [
 	{
 		size: {
-			$lt: 2,
+			$eq: 1,
 		},
 	},
 	{
 		size: {
 			$and: [
 				{
-					$gte: 2,
+					$gt: 1,
 				},
 				{
-					$lt: 5,
+					$lte: 3,
+				},
+			],
+		},
+	},
+	{
+		size: {
+			$and: [
+				{
+					$gt: 3,
+				},
+				{
+					$lte: 5,
 				},
 			],
 		},
@@ -343,7 +355,7 @@ const ClonotypeBarChart = () => {
 		const scrollIndex = 0;
 		chartRef.current?.dispatchAction({
 			type: "dataZoom",
-			// optional; index of dataZoom component; useful for are multiple dataZoom components; 0 by default
+			// optional; index of dataZoomcomponent; useful for are multiple dataZoom components; 0 by default
 			dataZoomIndex: 0,
 			// data value at starting location
 			startValue: xAxisRef.current?.length - scrollIndex,
