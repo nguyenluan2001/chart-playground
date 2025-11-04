@@ -12,6 +12,8 @@ import TableTest from "./components/table";
 import data from "./data.json";
 import SwarmChart from "./components/clonotype/swarmchart/SwarmChart";
 import HeatmapMatrix from "./components/clustergrammarGL";
+import HeatmapVT from "./components/vitessce/Heatmap";
+import { expressionMatrix, cellColors } from "./components/vitessce/Heatmap.test.fixtures";
 
 function App() {
 	const graphicRef = useRef<any>();
@@ -225,7 +227,22 @@ function App() {
 	// return <ClonotypeViolin />;
 	// return <ClonotypeMotif />;
 	// return <SwarmChart />;
-	return <HeatmapMatrix />;
+	// return <HeatmapMatrix />;
+	return <Vitessce config={myViewConfig} height={800} theme="light" />;
+	// return (
+	// 	<HeatmapVT
+	// 		uuid="heatmap-0"
+	// 		theme="dark"
+	// 		width={100}
+	// 		height={100}
+	// 		colormap="plasma"
+	// 		colormapRange={[0.0, 1.0]}
+	// 		expressionMatrix={expressionMatrix}
+	// 		cellColors={cellColors}
+	// 		transpose
+	// 		viewState={{ zoom: 0, target: [0, 0] }}
+	// 	/>
+	// );
 }
 
 export default App;

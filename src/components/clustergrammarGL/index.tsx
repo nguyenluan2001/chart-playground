@@ -1,5 +1,5 @@
 // HeatmapMatrix.js
-import { Layer, OrthographicView } from "@deck.gl/core";
+import { _mergeShaders, Layer, OrthographicView, project32 } from "@deck.gl/core";
 // import { DeckGL, DeckGLRef } from "deck.gl";
 import { DeckGL } from "@deck.gl/react";
 // import GL from "@luma.gl/constants";
@@ -7,68 +7,105 @@ import { Geometry, Model } from "@luma.gl/engine";
 import { useMemo, useRef, useState } from "react";
 import { webgl2Adapter } from "@luma.gl/webgl";
 import { luma } from "@luma.gl/core";
-luma.registerAdapters([webgl2Adapter]);
+import { BitmapLayer, ScatterplotLayer } from "@deck.gl/layers";
+// luma.registerAdapters([webgl2Adapter]);
 
 // === 1️⃣ Shaders ===
 
 // === 2️⃣ Custom Layer ===
-export class HeatmapMatrixLayer extends Layer {
+class HeatmapMatrixLayer extends BitmapLayer {
+	getShaders() {
+		// ✅ Updated to GLSL 3.00 syntax
+		return _mergeShaders(
+			{
+				vs: `#version 300 es
+	    in vec2 positions;
+	    out vec2 vTexCoord;
+	    void main(void) {
+	      vTexCoord = positions * 0.5 + 0.5;
+		  vec2 uCenter = vec2(-0.5, 0.5);
+		  vec2 pos = positions * 0.2 + uCenter; // scale + translate
+	      gl_Position = vec4(pos, 0.0, 1.0);
+	    }
+	  `,
+				fs: `#version 300 es
+	    precision highp float;
+	    out vec4 fragColor;
+	    void main(void) {
+	      fragColor = vec4(1.0, 1.0, 0.0, 1.0);  // 🔴 red fill
+	    }
+	  `,
+				modules: [project32],
+			},
+			[],
+		);
+	}
+
 	initializeState() {
+		super.initializeState();
+
 		const { device } = this.context;
-		console.log("device", device);
-		if (!device) return; // ✅ device not ready yet (important guard)
-		const vs = `#version 300 es
-		in vec2 positions;
-		void main(void) {
-		  gl_Position = vec4(positions, 0.0, 1.0);
-		}`;
-		const fs = `#version 300 es
-		precision highp float;
-		out vec4 fragColor;
-		void main(void) {
-		  fragColor = vec4(1.0, 0.0, 0.0, 1.0);
-		}`;
-		// rectangle (two triangles) in NDC coords
-		const positions = new Float32Array([
-			-0.25, -0.25, 0.25, -0.25, 0.25, 0.25, -0.25, -0.25, 0.25, 0.25, -0.25, 0.25,
-		]);
-		// Create a Model (engine helper) — easier than raw pipeline for simple draws
-		const model = new Model(device, {
-			vs,
-			fs,
-			geometry: new Geometry({
-				drawMode: "triangle-list",
-				attributes: {
-					positions,
-				},
-			}),
-			// no bindings/uniforms necessary for a solid color rectangle
+
+		// Replace BitmapLayer’s model with a simple red rectangle quad
+		this.setState({
+			model: this.getModel(device),
 		});
-		this.state.model = model;
+		this._createTexture();
 	}
 
-	draw() {
-		const { device } = this.context;
-		const { model } = this.state;
-		console.log("device", device);
-
-		if (!device) return; // ✅ device not ready yet (important guard)
-
-		// begin a render pass (defaults to canvas/framebuffer)
-		const renderPass = device.beginRenderPass({
-			// optional: clearColor: [0,0,0,0],
-		});
-
-		// draw the model into the render pass
-		model.draw(renderPass);
-
-		// finish and submit
-		renderPass.end();
-		device.submit();
+	getModel(device) {
+		return super._getModel();
 	}
 
-	finalizeState() {
-		this.state.model?.destroy();
+	_createTexture() {
+		const matrix = [
+			[0.1, 0.5],
+			[0.8, 0.2],
+		];
+		const { device } = this.context;
+
+		if (!matrix || !device) return;
+
+		const height = matrix.length;
+		const width = matrix[0].length;
+		const flat = matrix.flat();
+
+		const data = new Uint8Array(flat.map((v) => Math.max(0, Math.min(1, v)) * 255));
+		console.log("🚀 ===== HeatmapMatrixLayer ===== _createTexture ===== data:", data);
+
+		// const texture = new Texture(device, {
+		// 	width,
+		// 	height,
+		// 	format: "r8unorm",
+		// 	mipmaps: false,
+		// 	sampler: { magFilter: "nearest", minFilter: "nearest" },
+		// 	data,
+		// });
+
+		const texture = device.createTexture({
+			data,
+			width,
+			height,
+			format: "r8unorm",
+			// mipmaps: false,
+			sampler: { magFilter: "nearest", minFilter: "nearest" },
+		});
+		this.setState({ texture });
+	}
+
+	draw(opts) {
+		const { model, texture } = this.state;
+
+		model?.shaderInputs.setProps({
+			custom: {
+				...opts.uniforms,
+				// uSize: size,
+				uCenter: [0.0, 0.0], // center of screen
+				uSize: [0.3, 0.2],
+				bitmapTexture: texture,
+			},
+		});
+		model?.draw(this.context.renderPass);
 	}
 }
 
@@ -76,6 +113,7 @@ export class HeatmapMatrixLayer extends Layer {
 export default function HeatmapMatrix() {
 	const [hover, setHover] = useState(null);
 	const deckRef = useRef<any>(null);
+	console.log("deckRef", deckRef.current);
 	const nGenes = 4; // rows
 	const nCells = 5; // cols
 
@@ -151,57 +189,92 @@ export default function HeatmapMatrix() {
 	const heatmapLayer = useMemo(() => {
 		if (!deckRef.current) return [];
 		return new HeatmapMatrixLayer({
-			id: "heatmap",
+			id: "red-rect",
+			bounds: [-1, -1, 1, 1], // [minX, minY, maxX, maxY]
+			coordinateSystem: 1, // COORDINATE_SYSTEM.CARTESIAN
+			size: 0.5,
 		});
 	}, [deckRef.current]);
 
 	const createDevice = async () => {
 		return await luma.createDevice({ type: "webgl" });
 	};
+	const layer = new ScatterplotLayer<any>({
+		id: "ScatterplotLayer",
+		data: "https://raw.githubusercontent.com/visgl/deck.gl-data/master/website/bart-stations.json",
+
+		stroked: true,
+		getPosition: (d: any) => d.coordinates,
+		getRadius: (d: any) => Math.sqrt(d.exits),
+		getFillColor: [255, 140, 0],
+		getLineColor: [0, 0, 0],
+		getLineWidth: 10,
+		radiusScale: 6,
+		pickable: true,
+	});
+	const layerBitmap = new BitmapLayer({
+		id: "BitmapLayer",
+		bounds: [-122.519, 37.7045, -122.355, 37.829],
+		image: "https://raw.githubusercontent.com/visgl/deck.gl-data/master/website/sf-districts.png",
+		pickable: true,
+	});
 
 	return (
-		<DeckGL
-			// layers={[heatmapLayer]}
-			// viewState={{
-			// 	target: [0, 0],
-			// 	zoom: 0,
-			// 	minZoom: -5,
-			// 	maxZoom: 20,
-			// }}
-			initialViewState={{
-				target: [0, 0, 0],
-				zoom: 0,
-			}}
-			views={
-				new OrthographicView({
-					id: "detail",
-					flipY: false,
-				})
-			}
-			controller={false}
-			ref={deckRef}
-			// onHover={({ x, y, coordinate }) => setHover(`x:${x}, y:${y}`)}
-			style={{ width: "100vw", height: "100vh" }}
-			deviceProps={{
-				type: "webgl",
-			}}
-			device={createDevice()}
-		>
-			{hover && (
-				<div
-					style={{
-						position: "absolute",
-						top: 10,
-						left: 10,
-						background: "rgba(0,0,0,0.7)",
-						color: "white",
-						padding: "4px 8px",
-						borderRadius: "4px",
-					}}
-				>
-					{hover}
-				</div>
-			)}
-		</DeckGL>
+		<div className="w-[500px] h-[500px] relative bg-black">
+			<DeckGL
+				layers={[heatmapLayer]}
+				// viewState={{
+				// 	target: [0, 0],
+				// 	zoom: 0,
+				// 	minZoom: -5,
+				// 	maxZoom: 20,
+				// }}
+				initialViewState={{
+					target: [0, 0, 0],
+					zoom: 0,
+				}}
+				// initialViewState={{
+				// 	longitude: -122.4,
+				// 	latitude: 37.74,
+				// 	zoom: 11,
+				// }}
+				views={
+					new OrthographicView({
+						// id: "detail",
+						// flipY: false,
+					})
+				}
+				// controller={{
+				// 	keyboard: false,
+				// 	doubleClickZoom: false,
+				// 	dragRotate: false,
+				// 	touchRotate: false,
+				// 	touchZoom: true,
+				// }}
+				ref={deckRef}
+				// onHover={({ x, y, coordinate }) => setHover(`x:${x}, y:${y}`)}
+				style={{ width: 500, height: 500 }}
+				deviceProps={{
+					type: "webgl",
+				}}
+				// device={createDevice()}
+			>
+				{hover && (
+					<div
+						style={{
+							position: "absolute",
+							top: 10,
+							left: 10,
+							background: "rgba(0,0,0,0.7)",
+							color: "white",
+							padding: "4px 8px",
+							borderRadius: "4px",
+						}}
+					>
+						{hover}
+					</div>
+				)}
+			</DeckGL>
+		</div>
 	);
 }
