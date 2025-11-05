@@ -49,7 +49,7 @@ const SplitByHeatmap = () => {
 			dataset: [
 				{
 					source: [
-						["metadata", "C1", "C2", "C3"],
+						["metadata", "C13434", "C2sdfsdf", "C123123"],
 						["M2", 20, 80, 0],
 					],
 				},
