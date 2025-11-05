@@ -1,0 +1,22 @@
+[
+    [
+        {
+            "cluster": "Cluster 1",
+            "cols": 100
+        }
+    ],
+    [
+        {
+            "cluster": "Cluster 2",
+            "cols": 30
+        },
+        {
+            "cluster": "Cluster 2.1",
+            "cols": 50
+        },
+        {
+            "cluster": "Cluster 2.2",
+            "cols": 20
+        }
+    ]
+]

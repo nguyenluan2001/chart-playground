@@ -14,6 +14,7 @@ import SwarmChart from "./components/clonotype/swarmchart/SwarmChart";
 import HeatmapMatrix from "./components/clustergrammarGL";
 import HeatmapVT from "./components/vitessce/Heatmap";
 import { expressionMatrix, cellColors } from "./components/vitessce/Heatmap.test.fixtures";
+import SplitByHeatmap from "./components/split-by-heatmap";
 
 function App() {
 	const graphicRef = useRef<any>();
@@ -228,7 +229,7 @@ function App() {
 	// return <ClonotypeMotif />;
 	// return <SwarmChart />;
 	// return <HeatmapMatrix />;
-	return <Vitessce config={myViewConfig} height={800} theme="light" />;
+	return <SplitByHeatmap />;
 	// return (
 	// 	<HeatmapVT
 	// 		uuid="heatmap-0"
