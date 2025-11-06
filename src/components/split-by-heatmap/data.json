@@ -1,22 +1,60 @@
-[
-    [
-        {
-            "cluster": "Cluster 1",
-            "cols": 100
-        }
+{
+    "metadata": [
+        "Metadata 1",
+        "Metadata 2"
     ],
-    [
-        {
-            "cluster": "Cluster 2",
-            "cols": 30
-        },
-        {
-            "cluster": "Cluster 2.1",
-            "cols": 50
-        },
-        {
-            "cluster": "Cluster 2.2",
-            "cols": 20
-        }
+    "splitBy": [
+        [
+            {
+                "cluster": "Cluster 1.1",
+                "cols": 4
+            },
+            {
+                "cluster": "Cluster 1.2",
+                "cols": 3
+            },
+            {
+                "cluster": "Cluster 1.3",
+                "cols": 3
+            }
+        ],
+        [
+            {
+                "cluster": "Cluster 2.1",
+                "cols": 1
+            },
+            {
+                "cluster": "Cluster 2.2",
+                "cols": 2
+            },
+            {
+                "cluster": "Cluster 2.3",
+                "cols": 1
+            },
+            {
+                "cluster": "Cluster 2.1",
+                "cols": 1
+            },
+            {
+                "cluster": "Cluster 2.2",
+                "cols": 1
+            },
+            {
+                "cluster": "Cluster 2.3",
+                "cols": 1
+            },
+            {
+                "cluster": "Cluster 2.1",
+                "cols": 1
+            },
+            {
+                "cluster": "Cluster 2.2",
+                "cols": 1
+            },
+            {
+                "cluster": "Cluster 2.3",
+                "cols": 1
+            }
+        ]
     ]
-]
+}
