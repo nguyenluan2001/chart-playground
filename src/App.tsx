@@ -15,6 +15,7 @@ import HeatmapMatrix from "./components/clustergrammarGL";
 import HeatmapVT from "./components/vitessce/Heatmap";
 import { expressionMatrix, cellColors } from "./components/vitessce/Heatmap.test.fixtures";
 import SplitByHeatmap from "./components/split-by-heatmap";
+import Violin from "./components/violin";
 
 function App() {
 	const graphicRef = useRef<any>();
@@ -229,7 +230,8 @@ function App() {
 	// return <ClonotypeMotif />;
 	// return <SwarmChart />;
 	// return <HeatmapMatrix />;
-	return <SplitByHeatmap />;
+	// return <SplitByHeatmap />;
+	return <Violin />
 	// return (
 	// 	<HeatmapVT
 	// 		uuid="heatmap-0"
